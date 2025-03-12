@@ -11,9 +11,6 @@
 	<img alt="License" src="https://img.shields.io/github/license/mewmewdevart/BootcampSysmap?color=F3AB13"/>
 </p>
 
-<<<<<<< HEAD
-
-
 
 ## Conteúdo Programático
 
@@ -52,16 +49,11 @@
 - React Native e Desenvolvimento Mobile  
 - Mobile Analytics
 
-
-#### Referências
-=======
-###
-- [Notes](NOTES.md) Anotações sobre as aulas.
+## NOTAS
+- [Anotações BackEnd](NOTESBackend.md) Anotações sobre as aulas de Backend
 
 
 ### Referências
->>>>>>> 8b4f81b (docs: anotações sobre as aulas do dia 11/03 - Javascript)
-
 - [Programming Notes for Professionals books](https://books.goalkicker.com/): Acervo de PDF's de TI.
 
 
