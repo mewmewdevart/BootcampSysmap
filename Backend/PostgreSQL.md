@@ -159,3 +159,6 @@ db.collection.insertOne(data, { writeConcern: { w: "majority" } });
 
 Em caso de falha, **você só consegue ter 2 dos 3**. E isso impacta diretamente o **design de sistemas escaláveis e escolha de banco de dados**.
 
+<p align="center">
+  <img src="https://3cs1e07ms.wordpress.com/wp-content/uploads/2016/02/cap.jpg" alt="CPA">
+</p>
