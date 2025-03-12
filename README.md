@@ -50,7 +50,7 @@
 - Mobile Analytics
 
 ## NOTAS
-- [Anotações BackEnd](NOTESBackend.md) Anotações sobre as aulas de Backend
+- [Anotações BackEnd](NotesBackend.md) Anotações sobre as aulas de Backend
 
 
 ### Referências
