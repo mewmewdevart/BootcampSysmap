@@ -11,6 +11,7 @@
 	<img alt="License" src="https://img.shields.io/github/license/mewmewdevart/BootcampSysmap?color=F3AB13"/>
 </p>
 
+<<<<<<< HEAD
 
 
 
@@ -53,6 +54,13 @@
 
 
 #### Referências
+=======
+###
+- [Notes](NOTES.md) Anotações sobre as aulas.
+
+
+### Referências
+>>>>>>> 8b4f81b (docs: anotações sobre as aulas do dia 11/03 - Javascript)
 
 - [Programming Notes for Professionals books](https://books.goalkicker.com/): Acervo de PDF's de TI.
 
