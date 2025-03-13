@@ -1,9 +1,35 @@
-# Serviço de mensageria
+# Sumário
+- [Serviço de Mensageria](#serviço-de-mensageria)
+  - [Em resumo](#em-resumo)
+  - [Exemplo prático](#exemplo-prático)
+  - [Benefícios](#benefícios)
+  - [Conceitos comuns](#conceitos-comuns)
+  - [Exemplos de serviços de mensageria populares](#exemplos-de-serviços-de-mensageria-populares)
+- [RabbitMQ](#rabbitmq)
+  - [O que é RabbitMQ](#o-que-é-rabbitmq)
+  - [Como o RabbitMQ funciona](#como-o-rabbitmq-funciona)
+  - [Por que usar RabbitMQ](#por-que-usar-rabbitmq)
+  - [Casos de Uso Comuns + Exemplos Práticos](#casos-de-uso-comuns--exemplos-práticos)
+    - [Microserviços](#microserviços)
+    - [Fila de Tarefas (Task Queue)](#fila-de-tarefas-task-queue)
+    - [Notificações em Tempo Real](#notificações-em-tempo-real)
+    - [Sistemas Desacoplados](#sistemas-desacoplados)
+    - [Processamento Assíncrono de Dados](#processamento-assíncrono-de-dados)
+  - [Resumo Rápido](#resumo-rápido)
+  - [Estrutura do exemplo](#estrutura-do-exemplo)
+  - [Pré-requisitos](#pré-requisitos)
+  - [Instale as dependências](#instale-as-dependências)
+  - [`producer.js` — Envia mensagens para a fila](#producerjs--envia-mensagens-para-a-fila)
+  - [`consumer.js` — Lê da fila e processa mensagens](#consumerjs--lê-da-fila-e-processa-mensagens)
+  - [Como testar](#como-testar)
+  - [Recapitulando](#recapitulando)
+
+## Serviço de Mensageria
 
 Um **serviço de mensageria** (ou sistema de mensagens) é uma tecnologia usada para **comunicação assíncrona entre aplicações, serviços ou sistemas** — ou seja, uma forma de enviar mensagens entre partes diferentes de um sistema **sem que elas precisem estar diretamente conectadas ao mesmo tempo**.
 
-### 📬 Em resumo:  
-Um serviço de mensageria atua como um **intermediário (broker)** que **recebe, armazena e entrega mensagens** entre produtor(es) (quem envia) e consumidor(es) (quem recebe).  
+### 📬 Em resumo:
+Um serviço de mensageria atua como um **intermediário (broker)** que **recebe, armazena e entrega mensagens** entre produtor(es) (quem envia) e consumidor(es) (quem recebe).
 
 ### 🔧 Exemplo prático:
 Imagine um e-commerce:
@@ -14,7 +40,7 @@ Imagine um e-commerce:
   - Serviço de estoque (para dar baixa no produto).
   - Serviço de logística (para iniciar o processo de entrega).
 
-Tudo isso **sem o sistema principal precisar esperar que cada etapa seja concluída na hora**.  
+Tudo isso **sem o sistema principal precisar esperar que cada etapa seja concluída na hora**.
 
 ### 💡 Benefícios:
 - **Desacoplamento** entre sistemas.
@@ -32,94 +58,104 @@ Tudo isso **sem o sistema principal precisar esperar que cada etapa seja conclu�
 | **Broker** | O intermediário (serviço que gerencia as mensagens). |
 
 ### 🚀 Exemplos de serviços de mensageria populares:
-- **RabbitMQ** 🐰  
-- **Apache Kafka** 🐘  
-- **Amazon SQS (Simple Queue Service)**  
-- **Redis Streams**  
-- **Azure Service Bus**  
+- **RabbitMQ** 🐰
+- **Apache Kafka** 🐘
+- **Amazon SQS (Simple Queue Service)**
+- **Redis Streams**
+- **Azure Service Bus**
 - **Google Pub/Sub**
 
+## RabbitMQ
 
-# 🐰 O que é RabbitMQ?
+### O que é RabbitMQ?
 
 O **RabbitMQ** é um **sistema de mensageria open-source** (message broker) que permite que diferentes sistemas ou serviços se comuniquem de forma **desacoplada e assíncrona**.
 
-Em outras palavras, ele funciona como um **mensageiro digital**:  
-- Um sistema **envia uma mensagem** (Produtor).  
-- O RabbitMQ **guarda essa mensagem em uma fila**.  
+Em outras palavras, ele funciona como um **mensageiro digital**:
+- Um sistema **envia uma mensagem** (Produtor).
+- O RabbitMQ **guarda essa mensagem em uma fila**.
 - Outro sistema **recebe e processa essa mensagem** (Consumidor), no seu próprio tempo.
-## 🔍 Como o RabbitMQ funciona?
 
-1. **Produtor (Producer):** Envia mensagens para uma fila.  
-2. **Fila (Queue):** Armazena temporariamente as mensagens até que sejam processadas.  
+### 🔍 Como o RabbitMQ funciona?
+
+1. **Produtor (Producer):** Envia mensagens para uma fila.
+2. **Fila (Queue):** Armazena temporariamente as mensagens até que sejam processadas.
 3. **Consumidor (Consumer):** Recebe e processa as mensagens da fila.
 
 > Se o consumidor estiver fora do ar, a mensagem continua na fila até ele voltar. Nada se perde!
-## ✅ Por que usar RabbitMQ?
 
-- **Desacoplamento de sistemas:** os serviços não dependem diretamente uns dos outros.  
-- **Escalabilidade:** múltiplos consumidores podem processar mensagens em paralelo.  
-- **Resiliência:** mensagens não se perdem se algum sistema falhar.  
-- **Melhor desempenho:** tarefas demoradas são processadas em segundo plano.  
+### ✅ Por que usar RabbitMQ?
+
+- **Desacoplamento de sistemas:** os serviços não dependem diretamente uns dos outros.
+- **Escalabilidade:** múltiplos consumidores podem processar mensagens em paralelo.
+- **Resiliência:** mensagens não se perdem se algum sistema falhar.
+- **Melhor desempenho:** tarefas demoradas são processadas em segundo plano.
 - **Organização e controle de fluxo:** você controla quando e como cada parte do sistema reage a eventos.
-## 📦 Casos de Uso Comuns + Exemplos Práticos
 
-### 1. Microserviços
+### 📦 Casos de Uso Comuns + Exemplos Práticos
 
-**Cenário real:**  
+#### Microserviços
+
+**Cenário real:**
 Você tem microserviços para pedidos, pagamentos e envio de e-mails.
 
-**Como o RabbitMQ ajuda:**  
-- O serviço de pedidos envia uma mensagem para a fila.  
-- O serviço de pagamentos pega a mensagem e processa.  
+**Como o RabbitMQ ajuda:**
+- O serviço de pedidos envia uma mensagem para a fila.
+- O serviço de pagamentos pega a mensagem e processa.
 - O serviço de e-mail escuta outra fila e envia o recibo.
 
 ➡ Os serviços ficam **independentes e mais fáceis de manter**.
-### 2. Fila de Tarefas (Task Queue)
 
-**Cenário real:**  
+#### Fila de Tarefas (Task Queue)
+
+**Cenário real:**
 Seu sistema precisa enviar 1000 e-mails ou gerar 1000 PDFs.
 
-**Como o RabbitMQ ajuda:**  
-- Envia as tarefas para uma fila.  
+**Como o RabbitMQ ajuda:**
+- Envia as tarefas para uma fila.
 - Consumidores vão pegando e executando uma a uma ou em paralelo.
 
 ➡ **Evita travamentos** no sistema principal.
-### 3. Notificações em Tempo Real
 
-**Cenário real:**  
+#### Notificações em Tempo Real
+
+**Cenário real:**
 Um usuário precisa ser avisado sobre uma nova mensagem ou evento.
 
-**Como o RabbitMQ ajuda:**  
-- O sistema envia uma mensagem para a fila de notificações.  
+**Como o RabbitMQ ajuda:**
+- O sistema envia uma mensagem para a fila de notificações.
 - Outro serviço pega a mensagem e envia push, e-mail ou SMS.
 
 ➡ Sistema de notificações **mais eficiente e confiável**.
-### 4. Sistemas Desacoplados
 
-**Cenário real:**  
+#### Sistemas Desacoplados
+
+**Cenário real:**
 Você quer que seu sistema funcione mesmo se uma parte estiver fora do ar.
 
-**Como o RabbitMQ ajuda:**  
-- Mensagens continuam na fila até o consumidor voltar.  
+**Como o RabbitMQ ajuda:**
+- Mensagens continuam na fila até o consumidor voltar.
 - Nenhuma tarefa é perdida.
 
 ➡ **Alta disponibilidade e tolerância a falhas**.
-### 5. Processamento Assíncrono de Dados
 
-**Cenário real:**  
+#### Processamento Assíncrono de Dados
+
+**Cenário real:**
 Você precisa processar algo pesado (ex: relatório), mas sem travar a experiência do usuário.
 
-**Como o RabbitMQ ajuda:**  
-- Usuário envia o pedido → entra na fila.  
-- O sistema processa em background.  
+**Como o RabbitMQ ajuda:**
+- Usuário envia o pedido → entra na fila.
+- O sistema processa em background.
 - Depois, envia o resultado via e-mail ou notificação.
 
 ➡ Usuário continua navegando normalmente, sem lentidão.
-## 📈 Resumo Rápido
+
+### 📈 Resumo Rápido
 
 > “Use RabbitMQ quando quiser **enfileirar tarefas**, **desacoplar sistemas**, **processar eventos assíncronos** ou **garantir resiliência no seu sistema**.”
-## 💻 Estrutura do exemplo
+
+### 💻 Estrutura do exemplo
 
 Vamos simular um sistema onde o usuário faz um **pedido via HTTP (Express)** e esse pedido é **enviado para uma fila no RabbitMQ**, depois outro processo (um consumidor) **pega essa mensagem da fila e processa**.
 
@@ -128,12 +164,13 @@ rabbitmq-example/
 ├── producer.js         # Express app que envia mensagens pra fila
 ├── consumer.js         # Serviço que escuta a fila e processa mensagens
 ```
-## ✅ Pré-requisitos
 
-- RabbitMQ rodando localmente (ou via Docker)  
+### ✅ Pré-requisitos
+
+- RabbitMQ rodando localmente (ou via Docker)
 - Node.js instalado
 
-### (Opcional) Suba o RabbitMQ com Docker:
+#### (Opcional) Suba o RabbitMQ com Docker:
 
 ```bash
 docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
@@ -141,13 +178,15 @@ docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-manag
 
 > Acesse o painel: [http://localhost:15672](http://localhost:15672)  
 > Login padrão: **guest / guest**
-## 📦 Instale as dependências
+
+### 📦 Instale as dependências
 
 ```bash
 npm init -y
 npm install express amqplib
 ```
-## 🔸 `producer.js` — Envia mensagens para a fila
+
+### 🔸 `producer.js` — Envia mensagens para a fila
 
 ```js
 // Importando bibliotecas necessárias
@@ -195,7 +234,8 @@ app.listen(3000, () => {
   connectRabbitMQ();
 });
 ```
-## 🔸 `consumer.js` — Lê da fila e processa mensagens
+
+### 🔸 `consumer.js` — Lê da fila e processa mensagens
 
 ```js
 const amqp = require("amqplib");
@@ -228,7 +268,8 @@ async function startConsumer() {
 
 startConsumer();
 ```
-## ▶️ Como testar
+
+### ▶️ Como testar
 
 1. Rode o **consumidor** em um terminal:
 ```bash
@@ -246,9 +287,10 @@ curl -X POST http://localhost:3000/pedido \
   -H "Content-Type: application/json" \
   -d '{"produto": "Camiseta", "quantidade": 2, "cliente": "Larissa"}'
 ```
-## 🧠 Recapitulando
 
-- O Express é o **produtor**.  
-- O `consumer.js` é o **consumidor**.  
+### 🧠 Recapitulando
+
+- O Express é o **produtor**.
+- O `consumer.js` é o **consumidor**.
 - O RabbitMQ faz a **ponte entre os dois**.
 
