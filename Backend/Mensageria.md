@@ -1,3 +1,45 @@
+# Serviço de mensageria
+
+Um **serviço de mensageria** (ou sistema de mensagens) é uma tecnologia usada para **comunicação assíncrona entre aplicações, serviços ou sistemas** — ou seja, uma forma de enviar mensagens entre partes diferentes de um sistema **sem que elas precisem estar diretamente conectadas ao mesmo tempo**.
+
+### 📬 Em resumo:  
+Um serviço de mensageria atua como um **intermediário (broker)** que **recebe, armazena e entrega mensagens** entre produtor(es) (quem envia) e consumidor(es) (quem recebe).  
+
+### 🔧 Exemplo prático:
+Imagine um e-commerce:
+
+- Quando alguém faz um pedido, o sistema **envia uma mensagem "Novo Pedido Criado"** para um serviço de mensageria.
+- Essa mensagem pode ser **consumida por outros serviços**, como:
+  - Serviço de envio de e-mails (para notificar o cliente).
+  - Serviço de estoque (para dar baixa no produto).
+  - Serviço de logística (para iniciar o processo de entrega).
+
+Tudo isso **sem o sistema principal precisar esperar que cada etapa seja concluída na hora**.  
+
+### 💡 Benefícios:
+- **Desacoplamento** entre sistemas.
+- **Escalabilidade** (serviços podem processar mensagens no seu ritmo).
+- **Tolerância a falhas** (se o consumidor estiver fora do ar, a mensagem pode ficar na fila até ele voltar).
+- **Alta performance** em sistemas distribuídos.
+
+### 🔁 Conceitos comuns:
+| Termo | Significado |
+|-------|-------------|
+| **Fila (Queue)** | As mensagens são processadas em ordem (FIFO). |
+| **Tópico (Topic)** | Vários consumidores podem receber a mesma mensagem (publicação/assinatura). |
+| **Produtor (Producer)** | Quem envia a mensagem. |
+| **Consumidor (Consumer)** | Quem recebe/processa a mensagem. |
+| **Broker** | O intermediário (serviço que gerencia as mensagens). |
+
+### 🚀 Exemplos de serviços de mensageria populares:
+- **RabbitMQ** 🐰  
+- **Apache Kafka** 🐘  
+- **Amazon SQS (Simple Queue Service)**  
+- **Redis Streams**  
+- **Azure Service Bus**  
+- **Google Pub/Sub**
+
+
 # 🐰 O que é RabbitMQ?
 
 O **RabbitMQ** é um **sistema de mensageria open-source** (message broker) que permite que diferentes sistemas ou serviços se comuniquem de forma **desacoplada e assíncrona**.
