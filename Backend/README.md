@@ -44,5 +44,10 @@ Instrutores: Danilo Rocha, Andryev Lemes, Marcio Felipe, Igor Castro, Tiago Cast
 - Diferença entre REST e RESTful
 - Autenticação e CORS
 
+### 13 / Março / 2025
+
+- [Serviço de mensageria](Mensageria.md)
+- RabbitMQ :  sistema de mensageria open-source
+
 Node v22.14.0 (LTS) : https://nodejs.org/en/download </br>
 VSCode : https://code.visualstudio.com/
