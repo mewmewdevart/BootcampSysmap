@@ -1,12 +1,15 @@
 # Sumário
-- [O que é SOLID](#o-que-é-solid)
+- [O que é SOLID?](#o-que-é-solid)
   - [Princípio da Responsabilidade Única (SRP)](#princípio-da-responsabilidade-única-srp)
   - [Princípio Aberto/Fechado (OCP)](#princípio-aberto-fechado-ocp)
   - [Princípio da Substituição de Liskov (LSP)](#princípio-da-substituição-de-liskov-lsp)
   - [Princípio da Segregação da Interface (ISP)](#princípio-da-segregação-da-interface-isp)
   - [Princípio da Inversão de Dependência (DIP)](#princípio-da-inversão-de-dependência-dip)
+- [O que é Domain Driven Design (DDD)?](#o-que-é-domain-driven-design-ddd)
+- [O que é DRY (Don't Repeat Yourself)?](#o-que-é-o-dry-dont-repeat-yourself)
+- [O que é KISS (Keep It Simple, Stupid)?](#o-que-é-o-kiss-keep-it-simple-stupid)
 
-# O que é SOLID?
+## O que é SOLID?
 
 **SOLID** é um conjunto de cinco princípios de design de software que visam tornar o código mais fácil de entender, manter e expandir. Eles ajudam a criar sistemas de software flexíveis, com menos dependências e mais reutilizáveis. A ideia por trás do SOLID é evitar o "código bagunçado" e promover boas práticas de programação.
 
@@ -18,16 +21,12 @@ A sigla SOLID é composta pelos seguintes princípios:
 4. **I** - Interface Segregation Principle (Princípio da Segregação da Interface)
 5. **D** - Dependency Inversion Principle (Princípio da Inversão de Dependência)
 
-Vamos entender cada um desses princípios com exemplos práticos em **TypeScript**.
+### Princípio da Responsabilidade Única (SRP)
 
-## Princípio da Responsabilidade Única (SRP)
-
-### O que diz?
+**O que diz?**  
 Cada classe ou módulo deve ter **uma única responsabilidade**, ou seja, deve fazer apenas uma coisa e fazer bem.
 
-### Exemplo em TypeScript:
-
-Imagina que temos uma classe que lida tanto com o cálculo de salário quanto com a persistência de dados no banco. Isso vai contra o SRP, pois ela tem duas responsabilidades.
+**Exemplo em TypeScript:**
 
 ```typescript
 class Funcionario {
@@ -44,7 +43,6 @@ class BancoDeDados {
 ```
 
 **Solução (aplicando o SRP):**
-Dividimos as responsabilidades em classes separadas, cada uma com uma responsabilidade bem definida.
 
 ```typescript
 class Funcionario {
@@ -60,16 +58,14 @@ class BancoDeDados {
 }
 ```
 
-Agora, `Funcionario` calcula o salário, e `BancoDeDados` lida com o armazenamento. Isso facilita a manutenção e evolução do código.
+Agora, `Funcionario` calcula o salário e `BancoDeDados` lida com o armazenamento, mantendo a **responsabilidade única** para cada classe.
 
-## Princípio Aberto/Fechado (OCP)
+### Princípio Aberto/Fechado (OCP)
 
-### O que diz?
+**O que diz?**  
 As classes devem ser **abertas para extensão**, mas **fechadas para modificação**. Ou seja, você pode adicionar novas funcionalidades sem alterar o código existente.
 
-### Exemplo em TypeScript:
-
-Imagina que temos uma classe que calcula pagamentos, mas, se precisarmos adicionar um novo tipo de pagamento, precisamos modificar a classe.
+**Exemplo em TypeScript:**
 
 ```typescript
 class Pagamento {
@@ -84,7 +80,6 @@ class Pagamento {
 ```
 
 **Solução (aplicando o OCP):**
-Para não modificar o código existente, podemos criar uma estrutura mais flexível usando polimorfismo.
 
 ```typescript
 abstract class Pagamento {
@@ -106,25 +101,16 @@ class PagamentoCartao extends Pagamento {
 function processarPagamento(pagamento: Pagamento) {
   pagamento.calcularPagamento();
 }
-
-// Uso:
-const boleto = new PagamentoBoleto();
-processarPagamento(boleto);
-
-const cartao = new PagamentoCartao();
-processarPagamento(cartao);
 ```
 
-Agora, se precisarmos adicionar um novo tipo de pagamento, podemos criar uma nova classe que estenda `Pagamento`, sem alterar o código da classe `Pagamento`.
+Agora, podemos adicionar novos tipos de pagamento criando novas classes, sem modificar o código existente, respeitando o **Princípio Aberto/Fechado**.
 
-## Princípio da Substituição de Liskov (LSP)
+### Princípio da Substituição de Liskov (LSP)
 
-### O que diz?
+**O que diz?**  
 Se uma classe `B` é uma subclasse de `A`, você deve poder substituir `A` por `B` sem quebrar o comportamento esperado.
 
-### Exemplo em TypeScript:
-
-Imagina que temos uma classe `Animal` e classes que a estendem, como `Cachorro` e `Gato`. Devemos ser capazes de substituir `Animal` por qualquer subclasse sem problemas.
+**Exemplo em TypeScript:**
 
 ```typescript
 class Animal {
@@ -148,25 +134,16 @@ class Gato extends Animal {
 function fazerSomDeAnimal(animal: Animal) {
   animal.fazerSom();
 }
-
-// Uso:
-const cachorro = new Cachorro();
-fazerSomDeAnimal(cachorro); // Saída: Au au
-
-const gato = new Gato();
-fazerSomDeAnimal(gato); // Saída: Miau
 ```
 
 Aqui, tanto o `Cachorro` quanto o `Gato` podem substituir `Animal` sem problemas, respeitando o **LSP**.
 
-## Princípio da Segregação da Interface (ISP)
+### Princípio da Segregação da Interface (ISP)
 
-### O que diz?
+**O que diz?**  
 Evite criar interfaces grandes e obrigar as classes a implementarem métodos que elas não vão usar. Em vez disso, crie **interfaces menores e mais específicas**.
 
-### Exemplo em TypeScript:
-
-Imagina que temos uma interface `Animal` com muitos métodos que nem todos os animais vão usar. Vamos separar esses métodos em interfaces menores.
+**Exemplo em TypeScript:**
 
 ```typescript
 interface PodeVoar {
@@ -192,14 +169,12 @@ class Peixe implements PodeNadar {
 
 Agora, cada classe implementa apenas as interfaces que fazem sentido para ela, respeitando o **ISP**.
 
-## Princípio da Inversão de Dependência (DIP)
+### Princípio da Inversão de Dependência (DIP)
 
-### O que diz?
+**O que diz?**  
 Os módulos de alto nível não devem depender de módulos de baixo nível. Ambos devem depender de abstrações. As abstrações não devem depender de detalhes, mas os detalhes devem depender de abstrações.
 
-### Exemplo em TypeScript:
-
-Imagina que temos uma classe `ControleRemoto` que depende diretamente de uma implementação de `TV`. Vamos inverter essa dependência para que o `ControleRemoto` dependa de uma abstração, e não de uma implementação específica.
+**Exemplo em TypeScript:**
 
 ```typescript
 interface Dispositivo {
@@ -229,15 +204,92 @@ class ControleRemoto {
     this.dispositivo.ligar();
   }
 }
-
-// Uso:
-const tv = new TV();
-const controleTV = new ControleRemoto(tv);
-controleTV.ligarDispositivo(); // Saída: TV ligada
-
-const radio = new Radio();
-const controleRadio = new ControleRemoto(radio);
-controleRadio.ligarDispositivo(); // Saída: Rádio ligado
 ```
 
-Agora, o `ControleRemoto` depende da abstração `Dispositivo`, permitindo que qualquer dispositivo seja conectado sem modificar a classe `ControleRemoto`, respeitando o **DIP**.
+Aqui, o `ControleRemoto` depende da abstração `Dispositivo`, permitindo que qualquer dispositivo seja conectado sem modificar a classe `ControleRemoto`, respeitando o **DIP**.
+
+## O que é Domain Driven Design (DDD)? 🤔💻
+
+O **Domain Driven Design (DDD)** é uma abordagem para o desenvolvimento de software que foca em entender profundamente o "domínio" do problema que você está tentando resolver e estruturar o código com base nesse entendimento.
+
+### Exemplificando com uma padaria 🍞🏪
+
+Imagine uma **padaria** com diversas áreas de funcionamento: **vendas** 💰, **estoque** 📦, **produção** 🍞, **entrega** 🚚, etc. Cada uma dessas áreas tem **sua própria linguagem** e regras que as governam. O DDD foca em entender essas áreas e como elas se comunicam entre si.
+
+#### Passos principais do DDD:
+
+1. **Domínio** 🧠: Entender o que está acontecendo na padaria. O "domínio" envolve todas as **atividades e regras** relacionadas ao funcionamento da padaria.
+2. **Modelagem** 🔧: Criar uma **representação do domínio** no software, refletindo o funcionamento real da padaria.
+3. **Linguagem Comum** 🗣️: Garantir que todos os envolvidos (programadores, analistas e pessoas do negócio) falem a mesma língua.
+
+## O que é DRY (Don't Repeat Yourself)? 🔄✋
+
+O princípio **DRY** (Não se repita) visa evitar a **duplicação de código**. Quando você percebe que está escrevendo o mesmo código várias vezes, é hora de refatorar para centralizar essa lógica em um único lugar.
+
+### Exemplo Simples: 🍞 Padaria
+
+Imagine que você tem uma padaria, e sempre precisa calcular o preço de um pão. Se, em várias partes do seu sistema, você está repetindo o cálculo do preço, isso é uma violação do princípio DRY.
+
+#### Sem DRY: Repetindo o cálculo
+
+```javascript
+let precoPao = 5;
+let quantidade1 = 3;
+let total1 = precoPao * quantidade1;
+
+let quantidade2 = 2;
+let total2 = precoPao * quantidade2;
+
+let quantidade3 = 4;
+let total3 = precoPao * quantidade3;
+```
+
+#### Com DRY: Centralizando a lógica
+
+```javascript
+function calcularPrecoPao(preco, quantidade) {
+  return preco * quantidade;
+}
+
+let precoPao = 5;
+let total1 = calcularPrecoPao(precoPao, 3);
+let total2 = calcularPrecoPao(precoPao, 2);
+let total3 = calcularPrecoPao(precoPao, 4);
+```
+
+Com isso, a lógica de cálculo do preço foi centralizada em uma única função e não precisa ser repetida em diversos lugares do código.
+
+## O que é KISS (Keep It Simple, Stupid)? 🧠💡
+
+O princípio **KISS** (Keep It Simple, Stupid - Mantenha Simples, Estúpido) defende que soluções simples são sempre melhores do que soluções complexas. A ideia é que, ao desenvolver software, devemos evitar complicações desnecessárias, buscando uma implementação que resolva o problema de forma eficiente e clara.
+
+### Exemplo de Complexidade Desnecessária
+
+Imagine que você está criando uma função para calcular a soma de números:
+
+```javascript
+function somaComplexa(a, b) {
+  if (a === undefined || b === undefined) {
+    throw new Error("Faltando parâmetros");
+  }
+  
+  // Lógica desnecessária para resolver um problema simples
+  let resultado = a
+
+;
+  for (let i = 0; i < b; i++) {
+    resultado += 1;
+  }
+  return resultado;
+}
+```
+
+### Exemplo KISS
+
+```javascript
+function somaSimples(a, b) {
+  return a + b;
+}
+```
+
+A solução simples é sempre a melhor!
