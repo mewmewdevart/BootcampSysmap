@@ -166,3 +166,5 @@ Aqui estão os principais recursos do Prisma:
 - **Prisma Studio** é uma interface gráfica **opcional** que permite visualizar e editar dados, mas é apenas uma das funcionalidades dentro do ecossistema do Prisma.
 
 Então, o Prisma não é apenas um visualizador/editor, mas uma ferramenta robusta para gerenciar a interação entre seu aplicativo e o banco de dados de forma eficiente e moderna.
+
+Seguindo o tuto no ytb: https://youtu.be/94FonmsT27s?t=1993
