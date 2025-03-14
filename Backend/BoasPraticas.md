@@ -6,8 +6,9 @@
   - [Princípio da Segregação da Interface (ISP)](#princípio-da-segregação-da-interface-isp)
   - [Princípio da Inversão de Dependência (DIP)](#princípio-da-inversão-de-dependência-dip)
 - [O que é Domain Driven Design (DDD)?](#o-que-é-domain-driven-design-ddd)
-- [O que é DRY (Don't Repeat Yourself)?](#o-que-é-o-dry-dont-repeat-yourself)
-- [O que é KISS (Keep It Simple, Stupid)?](#o-que-é-o-kiss-keep-it-simple-stupid)
+- [O que é DRY (Don't Repeat Yourself)?](#o-que-é-dry-dont-repeat-yourself)
+- [O que é KISS (Keep It Simple, Stupid)?](#o-que-é-kiss-keep-it-simple-stupid)
+- [O que é YAGNI (You Ain’t Gonna Need It)?](#o-que-é-yagni-you-aint-gonna-need-it)
 
 ## O que é SOLID?
 
@@ -274,9 +275,7 @@ function somaComplexa(a, b) {
   }
   
   // Lógica desnecessária para resolver um problema simples
-  let resultado = a
-
-;
+  let resultado = a;
   for (let i = 0; i < b; i++) {
     resultado += 1;
   }
@@ -293,3 +292,37 @@ function somaSimples(a, b) {
 ```
 
 A solução simples é sempre a melhor!
+
+## O que é YAGNI (You Ain’t Gonna Need It)? 🤷‍♂️🚫
+
+O princípio **YAGNI** (Você Não Vai Precisar) sugere que você não deve adicionar funcionalidades ao seu código até que elas sejam realmente necessárias. A ideia é evitar o desperdício de tempo e recursos implementando algo que pode nunca ser usado.
+
+### Exemplo Simples: 📦 Sistema de Estoque
+
+Imagine que você está desenvolvendo um sistema de estoque e pensa em adicionar uma funcionalidade para calcular o valor total dos itens em estoque em diferentes moedas, mesmo que atualmente só precise em uma moeda.
+
+#### Sem YAGNI: Adicionando funcionalidade desnecessária
+
+```javascript
+function calcularValorTotalEmMoedas(itens, taxaDeCambio) {
+  let total = 0;
+  for (let item of itens) {
+    total += item.preco * item.quantidade * taxaDeCambio;
+  }
+  return total;
+}
+```
+
+#### Com YAGNI: Focando no necessário
+
+```javascript
+function calcularValorTotal(itens) {
+  let total = 0;
+  for (let item of itens) {
+    total += item.preco * item.quantidade;
+  }
+  return total;
+}
+```
+
+Com isso, você evita complexidade desnecessária e foca apenas no que é realmente necessário no momento.
