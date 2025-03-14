@@ -1,0 +1,23 @@
+{
+  "name": "api-node-jwt",
+  "version": "1.0.0",
+  "description": "## Objetivos do Curso - Criar uma API do Zero com Node e Express - Aprender a criptografar senhas - Aprender a usar o banco de dados MongoDB - Aprender a usar Prisma - Implementar rotas públicas e privadas - Utilizar tokens JWT para autenticação",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/adapter-pg": "^6.5.0",
+    "@prisma/client": "^6.5.0",
+    "bcrypt": "^5.1.1",
+    "express": "^4.21.2",
+    "pg": "^8.14.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.5.0"
+  }
+}
