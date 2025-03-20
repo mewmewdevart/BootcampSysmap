@@ -5,6 +5,7 @@
 - [Exemplo básico do schema.prisma](#exemplo-básico-do-schemaprisma)
 - [Rodar migration](#rodar-migration)
 - [Usar Prisma Client no código](#usar-prisma-client-no-código)
+- [Comandos adicionais do Prisma](#comandos-adicionais-do-prisma)
 - [Comandos úteis](#comandos-úteis)
 - [Vantagens do Prisma](#vantagens-do-prisma)
 - [Prisma vs Outros ORMs](#prisma-vs-outros-orms)
@@ -31,7 +32,7 @@
 - SQL Server
 - MongoDB (modo experimental)
 
-## Instalação do Prisma com PostgreSQL (exemplo)
+## Instalação do Prisma com PostgreSQL
 ```bash
 npm install prisma --save-dev
 npx prisma init
@@ -74,8 +75,14 @@ model Post {
 ```
 
 ## Rodar migration (criar tabelas no banco)
+A cada atualização
 ```bash
 npx prisma migrate dev --name init
+```
+
+## Para usar o prisma studio em uma url
+```bash
+npx prisma studio
 ```
 
 ## Usar Prisma Client no código
@@ -93,6 +100,16 @@ await prisma.usuario.create({
 
 // Buscar usuários
 const users = await prisma.usuario.findMany()
+```
+
+## Comandos adicionais do Prisma
+
+```bash
+# Em ambiente de desenvolvimento, cria uma nova migration se houver mudanças no schema
+npx prisma dev
+
+# Em ambiente de produção, aplica as migrations existentes sem criar novas
+npx prisma deploy
 ```
 
 ## Comandos úteis

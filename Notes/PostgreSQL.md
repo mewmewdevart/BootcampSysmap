@@ -92,6 +92,122 @@ SELECT nome, email FROM usuarios WHERE ativo = true;
 - Tem suporte a **Stored Procedures, Triggers, Views, Roles**, etc.
 - É usado por empresas como: **Instagram, Skype, Reddit, Spotify** (junto a outros bancos).
 
+
+Aqui estão alguns **comandos básicos** para usar o **PostgreSQL** diretamente no terminal:
+
+### 1. **Acessar o PostgreSQL:**
+Para conectar ao PostgreSQL no terminal:
+
+- **Conectar ao PostgreSQL:**
+  ```bash
+  psql -U usuario -d nome_do_banco
+  ```
+  Onde:
+  - `usuario` é o nome do usuário do banco de dados.
+  - `nome_do_banco` é o nome do banco de dados ao qual você deseja se conectar.
+
+- **Conectar ao banco padrão `postgres`:**
+  ```bash
+  psql -U usuario -d postgres
+  ```
+
+### 2. **Comandos no PostgreSQL (dentro do terminal psql):**
+
+#### **Gerenciamento de Banco de Dados**
+- **Listar bancos de dados disponíveis:**
+  ```sql
+  \l
+  ```
+  
+- **Conectar a um banco de dados específico:**
+  ```sql
+  \c nome_do_banco
+  ```
+
+- **Criar um banco de dados:**
+  ```sql
+  CREATE DATABASE nome_do_banco;
+  ```
+
+- **Excluir um banco de dados:**
+  ```sql
+  DROP DATABASE nome_do_banco;
+  ```
+
+#### **Gerenciamento de Tabelas**
+- **Listar as tabelas no banco de dados atual:**
+  ```sql
+  \dt
+  ```
+
+- **Criar uma tabela:**
+  ```sql
+  CREATE TABLE nome_da_tabela (
+      id SERIAL PRIMARY KEY,
+      nome VARCHAR(100),
+      idade INT
+  );
+  ```
+
+- **Excluir uma tabela:**
+  ```sql
+  DROP TABLE nome_da_tabela;
+  ```
+
+- **Ver a estrutura de uma tabela:**
+  ```sql
+  \d nome_da_tabela
+  ```
+
+#### **Manipulação de Dados**
+- **Inserir dados em uma tabela:**
+  ```sql
+  INSERT INTO nome_da_tabela (nome, idade) VALUES ('João', 25);
+  ```
+
+- **Selecionar dados de uma tabela:**
+  ```sql
+  SELECT * FROM nome_da_tabela;
+  ```
+
+- **Selecionar dados específicos com condição:**
+  ```sql
+  SELECT nome, idade FROM nome_da_tabela WHERE idade > 18;
+  ```
+
+- **Atualizar dados:**
+  ```sql
+  UPDATE nome_da_tabela SET idade = 26 WHERE nome = 'João';
+  ```
+
+- **Deletar dados:**
+  ```sql
+  DELETE FROM nome_da_tabela WHERE nome = 'João';
+  ```
+
+#### **Outros Comandos**
+- **Exibir todos os comandos SQL executados:**
+  ```sql
+  \s
+  ```
+
+- **Ver todas as funções do PostgreSQL:**
+  ```sql
+  \df
+  ```
+
+- **Sair do psql:**
+  ```sql
+  \q
+  ```
+
+#### **Mostrar as configurações do banco de dados**
+- **Exibir informações do banco de dados atual:**
+  ```sql
+  \conninfo
+  ```
+
+
 ## ⚖️ **CAP Theorem (Teorema CAP)**
 
 > Também chamado de **Teorema de Brewer**, ele afirma que **em um sistema distribuído**, é impossível garantir **simultaneamente** os três atributos a seguir:
