@@ -1,8 +1,7 @@
 import express, { json } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-
-import { testController } from "./controllers/teste-controller";
+import userController from "./controllers/user-controller";
 
 dotenv.config();
 
@@ -11,7 +10,7 @@ const server = express(); // => Express é um objeto que retorna varios elemento
 server.use(json()) // => Avisando ao express que os dados sao via json
 server.use(cors()) // => A api passa a ceitar requisições só desse dominio
 
-testController(server);
+userController(server);
 
 const port = process.env.PORT;
 

@@ -1,17 +1,32 @@
+// Define o gerador do cliente Prisma, que será usado para gerar o Prisma Client JS
 generator client {
   provider = "prisma-client-js"
 }
 
+// Define a fonte de dados, que neste caso é um banco de dados PostgreSQL
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL") // A URL do banco de dados é obtida a partir de uma variável de ambiente
 }
 
+// Define o modelo User (usuário)
 model User {
-  id       String @id @default(uuid())
-  name     String @db.VarChar(100)
-  email    String @unique
-  password String
+  id       String     @id @default(uuid()) // Campo 'id' é a chave primária e seu valor padrão é um UUID
+  name     String     @db.VarChar(100)     // Campo 'name' é uma string com um máximo de 100 caracteres
+  email    String     @unique              // Campo 'email' é único
+  password String                          // Campo 'password' é uma string
+  Activity Activity[]                      // Relacionamento um-para-muitos com o modelo Activity
 
-  @@map("users")
+  @@map("users") // Mapeia o modelo User para a tabela 'users' no banco de dados
+}
+
+// Define o modelo Activity (atividade)
+model Activity {
+  id          String @id @default(uuid()) // Campo 'id' é a chave primária e seu valor padrão é um UUID
+  title       String                      // Campo 'title' é uma string
+  description String                      // Campo 'description' é uma string
+  user        User   @relation(fields: [userId], references: [id]) // Relacionamento muitos-para-um com o modelo User
+  userId      String                      // Campo 'userId' é uma string que referencia o campo 'id' do modelo User
+
+  @@map("activities")
 }
