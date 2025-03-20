@@ -1,0 +1,14 @@
+services:
+  postgresql:  # Nome do serviço para o container PostgreSQL (pode ser qualquer nome)
+    image: postgres  # Imagem Docker para o PostgreSQL
+    container_name: db  # Nome do container (pode ser qualquer nome) em que o PostgreSQL será executado
+    environment:
+      POSTGRES_USER: bootcamp  # Nome de usuário do banco de dados
+      POSTGRES_PASSWORD: bootcamp  # Senha do banco de dados
+      POSTGRES_DB: bootcamp  # Nome do banco de dados a ser criado
+    ports:
+      - "5433:5432"  # Mapeamento de portas entre o host (esquerda) e o container (direita) - Porta padrão do PostgreSQL para conexões de banco de dados
+
+# Nota: O serviço postgresql define um container. Se você quiser adicionar mais serviços, 
+# como outro banco de dados ou containers de aplicação, você precisa criar serviços adicionais 
+# dentro deste arquivo, seguindo a mesma estrutura. Cada serviço será seu próprio container.
