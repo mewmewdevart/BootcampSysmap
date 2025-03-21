@@ -1,3 +1,5 @@
+// 1. Importa o PrismaClient da biblioteca @prisma/client
 import { PrismaClient } from "@prisma/client";
 
-export default new PrismaClient ();
+// 2. Exporta uma nova instância do PrismaClient
+export default new PrismaClient();
