@@ -1,15 +1,12 @@
-// 1. Importa o cliente Prisma
 import prisma from "../prisma/prisma-client";
-
-// 2. Importa o tipo userData
 import userData from "../types/user-data";
 
-// 3. Função para obter todos os usuários
+// 1. Função para obter todos os usuários
 export async function getAll() {
   return await prisma.user.findMany();
 }
 
-// 4. Função para obter um usuário pelo ID
+// 2. Função para obter um usuário pelo ID
 export async function getById(id: string) {
   return await prisma.user.findUnique({
     where: {
@@ -18,14 +15,14 @@ export async function getById(id: string) {
   });
 }
 
-// 5. Função para criar um novo usuário
+// 3. Função para criar um novo usuário
 export async function create(data: userData) {
   return await prisma.user.create({
     data,
   });
 }
 
-// 6. Função para atualizar um usuário existente
+// 4. Função para atualizar um usuário existente
 export async function update(data: userData, id: string) {
   return await prisma.user.update({
     data,
@@ -35,7 +32,7 @@ export async function update(data: userData, id: string) {
   });
 }
 
-// 7. Função para remover um usuário pelo ID
+// 5. Função para remover um usuário pelo ID
 export async function remove(id: string) {
   return await prisma.user.delete({
     where: {

@@ -1,7 +1,6 @@
-// 1. Importa o cliente Prisma
 import prisma from "../prisma/prisma-client";
 
-// 2. Função para criar relações entre usuários e atividades
+// 1. Função para criar relações entre usuários e atividades
 export async function createRelations(
   data: { activityId: string; userId: string }[]
 ) {
@@ -10,7 +9,7 @@ export async function createRelations(
   });
 }
 
-// 3. Função para obter atividades por ID de usuário
+// 2. Função para obter atividades por ID de usuário
 export async function getActivitiesByUserId(userId: string) {
   return await prisma.userActivity.findMany({
     where: {
