@@ -1,10 +1,11 @@
 import { Express, Router } from "express";
 
-// 1. Importa as funções do repositório de usuário
+// Importa as funções do repositório de usuário
 import {
   create,
   getAll,
   getById,
+  getPaginated,
   remove,
   update,
 } from "../repository/user-repository";
@@ -14,25 +15,48 @@ import {
   PrismaClientKnownRequestError,
   PrismaClientValidationError,
 } from "@prisma/client/runtime/library";
+import authGuard from "../middlwares/auth-guard";
 
 // 3. Define o controlador de usuário
 const userController = (server: Express) => {
   const router = Router();
+  // router.use(authGuard); => guarda de autenticação em todas as rotas
 
   // 4. Rota para obter todos os usuários
-  router.get("/", async (request, response) => {
-    const users = await getAll();
+  router.get("/", authGuard, async (request, response) => {
+    const { filterBy, filter, orderBy, order } = request.query as {
+      filterBy: string;
+      filter: string;
+      orderBy: string;
+      order: string;
+    };
+
+    const users = await getAll(
+      filterBy,
+      filter,
+      orderBy || "email",
+      order || "desc"
+    );
+
     response.status(200).send(users);
   });
 
-  // 5. Rota para obter um usuário pelo ID
+  // 5. Rota para obter usuários paginados
+  router.get("/paginated", async (request, response) => {
+    const { take, skip } = request.query; // desestruturação de objeto
+
+    const users = await getPaginated(parseInt(take as string), parseInt(skip as string));
+    response.status(200).send(users);
+  });
+
+  // 6. Rota para obter um usuário pelo ID
   router.get("/:id", async (request, response) => {
     const userId = request.params.id;
     const user = await getById(userId);
     response.status(200).send(user);
   });
 
-  // 6. Rota para criar um novo usuário
+  // 7. Rota para criar um novo usuário
   router.post("/new", async (request, response) => {
     try {
       const userData = request.body;
@@ -58,7 +82,7 @@ const userController = (server: Express) => {
     }
   });
 
-  // 7. Rota para atualizar um usuário existente
+  // 8. Rota para atualizar um usuário existente
   router.put("/update/:id", async (request, response) => {
     const userId = request.params.id;
     const userData = request.body;
@@ -67,7 +91,7 @@ const userController = (server: Express) => {
     response.status(200).send(user);
   });
 
-  // 8. Rota para remover um usuário pelo ID
+  // 9. Rota para remover um usuário pelo ID
   router.delete("/delete/:id", async (request, response) => {
     const userId = request.params.id;
     const user = await remove(userId);
@@ -75,9 +99,9 @@ const userController = (server: Express) => {
     response.status(200).send(user);
   });
 
-  // 9. Adiciona o roteador ao servidor na rota /users
+  // 10. Adiciona o roteador ao servidor na rota /users
   server.use("/users", router);
 };
 
-// 10. Exporta o controlador de usuário como padrão
+// 11. Exporta o controlador de usuário como padrão
 export default userController;

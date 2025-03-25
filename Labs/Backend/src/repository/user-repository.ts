@@ -2,11 +2,40 @@ import prisma from "../prisma/prisma-client";
 import userData from "../types/user-data";
 
 // 1. Função para obter todos os usuários
-export async function getAll() {
-  return await prisma.user.findMany();
+export async function getAll(
+  filterBy: string | undefined,
+  filter: string | undefined,
+  orderByField: string,
+  direction: string
+) {
+  const where = filterBy
+    ? {
+        [filterBy]: { contains: filter, mode: "insensitive" },
+      }
+    : undefined;
+
+  const orderBy = {
+    [orderByField]: direction,
+  };
+
+  return await prisma.user.findMany({
+    where,
+    orderBy,
+  });
 }
 
-// 2. Função para obter um usuário pelo ID
+// 2. Função para obter usuários paginados
+export async function getPaginated(take: number, skip: number) {
+  return await prisma.user.findMany({
+    take,
+    skip,
+    orderBy: {
+      email: "asc",
+    }
+  });
+}
+
+// 3. Função para obter um usuário pelo ID
 export async function getById(id: string) {
   return await prisma.user.findUnique({
     where: {
@@ -15,14 +44,23 @@ export async function getById(id: string) {
   });
 }
 
-// 3. Função para criar um novo usuário
+export async function getByEmail(email: string) {
+  return await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+}
+
+// 4. Função para criar um novo usuário
 export async function create(data: userData) {
   return await prisma.user.create({
     data,
   });
 }
 
-// 4. Função para atualizar um usuário existente
+
+// 5. Função para atualizar um usuário existente
 export async function update(data: userData, id: string) {
   return await prisma.user.update({
     data,
@@ -32,7 +70,7 @@ export async function update(data: userData, id: string) {
   });
 }
 
-// 5. Função para remover um usuário pelo ID
+// 6. Função para remover um usuário pelo ID
 export async function remove(id: string) {
   return await prisma.user.delete({
     where: {

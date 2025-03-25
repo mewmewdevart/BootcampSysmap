@@ -1,41 +1,36 @@
-// 1. Define o gerador do cliente Prisma
 generator client {
-  provider = "prisma-client-js" // Define que o cliente Prisma será gerado em JavaScript
+  provider = "prisma-client-js"
 }
 
-// 2. Define a fonte de dados como PostgreSQL
 datasource db {
-  provider = "postgresql" // Define o provedor do banco de dados como PostgreSQL
-  url      = env("DATABASE_URL") // Define a URL de conexão do banco de dados a partir da variável de ambiente DATABASE_URL
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-// 3. Define o modelo User
 model User {
-  id           String         @id @default(uuid()) // Campo id do tipo String, chave primária, com valor padrão gerado como UUID
-  name         String         @db.VarChar(600) // Campo name do tipo String, com tamanho máximo de 600 caracteres
-  email        String         @unique // Campo email do tipo String, deve ser único
-  password     String // Campo password do tipo String
-  UserActivity UserActivity[] // Relacionamento com o modelo UserActivity
+  id           String         @id @default(uuid())
+  name         String         @db.VarChar(600)
+  email        String         @unique
+  password     String
+  UserActivity UserActivity[]
 
-  @@map("users") // Mapeia o modelo User para a tabela "users" no banco de dados
+  @@map("users")
 }
 
-// 4. Define o modelo Activity
 model Activity {
-  id           String         @id @default(uuid()) // Campo id do tipo String, chave primária, com valor padrão gerado como UUID
-  title        String // Campo title do tipo String
-  description  String // Campo description do tipo String
-  UserActivity UserActivity[] // Relacionamento com o modelo UserActivity
+  id           String         @id @default(uuid())
+  title        String
+  description  String
+  UserActivity UserActivity[]
 
-  @@map("activities") // Mapeia o modelo Activity para a tabela "activities" no banco de dados
+  @@map("activities")
 }
 
-// 5. Define o modelo UserActivity para relacionar usuários e atividades
 model UserActivity {
-  user       User     @relation(fields: [userId], references: [id]) // Relacionamento com o modelo User, referenciando o campo id
-  activity   Activity @relation(fields: [activityId], references: [id]) // Relacionamento com o modelo Activity, referenciando o campo id
-  userId     String // Campo userId do tipo String
-  activityId String // Campo activityId do tipo String
+  user       User     @relation(fields: [userId], references: [id])
+  activity   Activity @relation(fields: [activityId], references: [id])
+  userId     String
+  activityId String
 
-  @@id([userId, activityId]) // Define a chave primária composta pelos campos userId e activityId
+  @@id([userId, activityId])
 }
