@@ -14,7 +14,7 @@ import {
   PrismaClientKnownRequestError,
   PrismaClientValidationError,
 } from "@prisma/client/runtime/library";
-import authGuard from "../middlwares/auth-guard";
+import authGuard from "../middlewares/auth-guard";
 import { createUser } from "../services/user-service";
 
 // 3. Define o controlador de usuário
