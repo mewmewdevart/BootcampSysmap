@@ -11,6 +11,8 @@ const server = express();
 server.use(json());
 // Adiciona o middleware para habilitar CORS
 server.use(cors());
+
+
 // 4. Adiciona o controlador de usuário ao servidor
 userController(server);
 // 5. Adiciona o controlador de atividade ao servidor
