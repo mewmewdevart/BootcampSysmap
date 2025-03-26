@@ -21,9 +21,9 @@ const authController = (server: Express) => {
         return;
       }
 
-    //   const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
-      if (!password) {
+      if (!isPasswordCorrect) {
         response.status(401).send("Senha incorreta.");
         return;
       }

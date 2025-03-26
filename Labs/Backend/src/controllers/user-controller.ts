@@ -2,7 +2,6 @@ import { Express, Router } from "express";
 
 // Importa as funções do repositório de usuário
 import {
-  create,
   getAll,
   getById,
   getPaginated,
@@ -16,11 +15,12 @@ import {
   PrismaClientValidationError,
 } from "@prisma/client/runtime/library";
 import authGuard from "../middlwares/auth-guard";
+import { createUser } from "../services/user-service";
 
 // 3. Define o controlador de usuário
 const userController = (server: Express) => {
   const router = Router();
-  // router.use(authGuard); => guarda de autenticação em todas as rotas
+  // router.use(authGuard);
 
   // 4. Rota para obter todos os usuários
   router.get("/", authGuard, async (request, response) => {
@@ -60,7 +60,7 @@ const userController = (server: Express) => {
   router.post("/new", async (request, response) => {
     try {
       const userData = request.body;
-      const user = await create(userData);
+      const user = await createUser(userData);
 
       response.status(201).send(user);
     } catch (error: any) {
