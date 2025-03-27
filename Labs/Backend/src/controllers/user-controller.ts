@@ -13,6 +13,8 @@ import {
 import { createUser } from "../services/user-service";
 import validateRequestBody from "../middlewares/request-body-validator";
 import userValidation from "../validations/user-validation";
+import upload from "../multer/multer";
+import { uploadImage } from "../services/s3-service";
 
 const userController = (server: Express) => {
   const router = Router();
@@ -54,13 +56,18 @@ const userController = (server: Express) => {
 
   router.post(
     "/new",
-    validateRequestBody(userValidation),
-    async (request, response) => {
+    // validateRequestBody(userValidation),
+    upload.single("avatar"),
+    async (request, response) =>  {
       try {
         const userData = request.body;
         const user = await createUser(userData);
+        // console.log(request.file);
+        console.log(request.file?.mimetype); // => Pega o tipo de extensao da aplicação
 
-        response.status(201).send(user);
+        const fileUrl = await uploadImage(request.file!);
+
+        response.status(201).send({...user, avatar:fileUrl});
       } catch (error: any) {
         if (error instanceof PrismaClientValidationError) {
           response.status(400).send("Dados inválidos ou faltando.");

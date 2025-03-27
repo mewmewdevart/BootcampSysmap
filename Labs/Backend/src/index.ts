@@ -4,6 +4,8 @@ import cors from "cors";
 import userController from "./controllers/user-controller";
 import activityController from "./controllers/activity-controller";
 import authController from "./controllers/auth-controller";
+import { createUser } from "./services/user-service";
+import { createBucket } from "./services/s3-service";
 
 // Cria uma instância do servidor express
 const server = express();
@@ -19,6 +21,13 @@ userController(server);
 activityController(server);
 // 6. Adiciona o controlador de autenticação ao servidor
 authController(server);
+
+// createUser({name:"Larissa", 
+//   email:"queijo@gmail.com",
+//   password:"1223456",
+// })
+
+createBucket();
 
 // 7. Define a porta do servidor a partir das variáveis de ambiente
 const port = process.env.PORT;

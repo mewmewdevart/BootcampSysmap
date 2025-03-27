@@ -8,3 +8,28 @@ services:
       POSTGRES_DB: bootcamp
     ports:
       - "5433:5432"
+
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile
+  #   container_name: app
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - PORT=3000
+  #     - DATABASE_URL=postgresql://bootcamp:bootcamp@postgres:5432/bootcamp?schema=public
+  #     - JWT_SECRET=iosjdfapa~wfjafçjsfafçslfUBDSFOIDSFSDÇF22
+  #   depends_on:
+  #     - postgresql
+  
+  localstack:
+    image: localstack/localstack
+    container_name: localstack
+    ports:
+      - "4566:4566"
+    environment:
+      SERVICES: s3
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY: test
+      AWS_SECRET_ACCESS_KEY: test
