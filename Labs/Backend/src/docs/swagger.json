@@ -1,0 +1,113 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Bootcamp 2025",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000"
+      }
+    ],
+    "paths": {
+      "/users": {
+        "get": {
+          "summary": "Busca todos os usuários",
+          "description": "Busca todos os usuários com filtros e ordenação.",
+          "tags": ["Usuários"],
+          "security": [{ "bearerAuth": [] }],
+          "parameters": [
+            {
+              "name": "filterBy",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "example": "email"
+              },
+              "description": "Campo pelo qual quero filtrar"
+            }
+          ],
+          "responses": {
+            "500": {
+              "$ref": "#/components/responses/InternalServerError"
+            }
+          }
+        }
+      },
+      "/users/new": {
+        "post": {
+          "summary": "Cria um usuário",
+          "tags": ["Usuários"],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "password": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Created",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "$ref": "#/components/responses/InternalServerError"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      },
+      "responses": {
+        "InternalServerError": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "error": {
+                    "type": "string",
+                    "example": "Erro inesperado."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
