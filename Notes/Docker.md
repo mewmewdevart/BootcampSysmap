@@ -1,196 +1,390 @@
-## 🐳 O que é Docker?
+# Guia Completo de Docker 🐳
+
+## Sumário
+- [O que é Docker?](#o-que-é-docker)
+- [Por que usar Docker?](#por-que-usar-docker)
+- [Exemplo básico](#exemplo-básico)
+- [Docker explicado com analogias](#docker-explicado-com-analogias)
+- [Exemplo prático com PostgreSQL](#exemplo-prático-com-postgresql)
+- [Configuração e Comandos](#configuração-e-comandos)
+- [Dockerfile do Projeto Backend](#dockerfile-do-projeto-backend)
+- [Arquivo `.dockerignore`](#arquivo-dockerignore)
+- [Perguntas Frequentes (FAQ)](#perguntas-frequentes-faq)
+- [Como rodar uma aplicação com Docker Compose](#como-rodar-uma-aplicação-com-docker-compose)
+
+---
+
+## O que é Docker?
 
 Docker é uma plataforma que permite **criar, empacotar, distribuir e executar aplicações em containers** — ambientes leves e isolados que rodam em qualquer lugar.
 
+---
+
 ## Por que usar Docker?
 
-- 📦 **Portabilidade**: "Funciona na minha máquina" agora funciona em qualquer lugar.
-- ⚡ **Agilidade**: Subida rápida de ambientes e aplicações.
-- 🔐 **Isolamento**: Cada container roda de forma independente, sem interferir no sistema.
-- 🔄 **Reprodutibilidade**: Ambientes consistentes entre desenvolvimento, testes e produção.
-- ☁️ **Facilidade de deploy**: Ideal para CI/CD, microsserviços e cloud.
+- 📦 **Portabilidade**: Funciona em qualquer lugar.
+- ⚡ **Agilidade**: Subida rápida de ambientes.
+- 🔐 **Isolamento**: Containers independentes.
+- 🔄 **Reprodutibilidade**: Ambientes consistentes.
+- ☁️ **Facilidade de deploy**: Ideal para CI/CD e microsserviços.
 
-## 🚀 Exemplo:
+---
+
+## Exemplo básico
+
+Rodando um container Ubuntu interativo:
 ```bash
 docker run -it ubuntu bash
 ```
 
-### Baixar Imagens
-Você pode baixar imagens do Docker Hub: [Docker Hub](https://hub.docker.com/)
+Baixe imagens do [Docker Hub](https://hub.docker.com/).
 
-## 🐳 Docker explicado com a analogia da casa
+---
 
-### 🖼️ **Imagem = Planta da Casa**
-- A imagem Docker é como a **planta arquitetônica** de uma casa.
-- Define tudo o que a casa precisa: estrutura, materiais, móveis (dependências, bibliotecas, sistema).
-- É **um modelo reutilizável**: você pode construir várias casas iguais a partir dela.
+## Docker explicado com analogias
 
-### 🏠 **Container = Casa construída**
-- O container é a **casa real construída** a partir da planta (imagem).
-- Funciona de forma isolada: cada casa/container tem seus próprios cômodos, móveis e moradores (dados e processos).
-- Você pode ter **várias casas (containers)** diferentes ou iguais, cada uma com sua função.
+- **Imagem = Planta da Casa**: Modelo reutilizável com dependências e configurações.
+- **Container = Casa construída**: Instância funcional e isolada da imagem.
+- **Docker Engine = Construtora**: Constrói containers a partir das imagens.
 
-### 🛠️ **Docker Engine = Construtora**
-- A construtora (Docker Engine) **pega a planta (imagem)** e **constrói casas (containers)** prontas pra uso.
+---
 
-## 💡 Exemplo prático com PostgreSQL
+## Exemplo prático com PostgreSQL
 
-Imagine que a **planta (imagem)** do PostgreSQL já tem tudo pronto: o banco de dados, as configurações e ferramentas.
-
-### 📦 Rodando uma "casa/container PostgreSQL":
+Rodando um container PostgreSQL:
 ```bash
 docker run --name meu-postgres -e POSTGRES_PASSWORD=senha123 -p 5432:5432 -d postgres
 ```
 
-### O que esse comando faz?
-- 🏠 Constrói uma casa (container) com a planta do PostgreSQL.
-- 🔐 Define a senha do morador (usuário padrão do banco).
-- 🔌 Abre a porta da casa (porta 5432) para você acessar de fora.
-- 🏷️ Dá o nome para a casa: `meu-postgres`.
+### O que o comando faz?
+- 🏠 Cria um container PostgreSQL.
+- 🔐 Define a senha do usuário.
+- 🔌 Mapeia a porta 5432.
+- 🏷️ Nomeia o container como `meu-postgres`.
 
-Agora você tem um **banco de dados funcional** isolado, portátil e pronto para uso, sem precisar instalar o PostgreSQL no seu sistema manualmente.
+### Benefícios:
+- Configuração rápida e padronizada.
+- Containers isolados e descartáveis.
 
-### ✨ Benefícios de usar Docker:
-- Montagem rápida e padronizada.
-- Casas (containers) que não interferem uma na outra.
-- Você pode destruir e recriar quando quiser, com um comando.
-- Ótimo para times, projetos, testes e produção.
+---
 
-## Configuração + Comandos
+## Configuração e Comandos
 
-### 1. **Verificar se o Docker e o Docker Compose estão instalados**
-Primeiro, você precisa garantir que o Docker e o Docker Compose estão instalados. 
+### Verificar instalação:
+```bash
+docker --version
+docker compose --version
+```
 
-#### Para verificar o Docker:
-Abra o terminal e digite:
+### Exemplo de `docker-compose.yml`:
+```yml
+services:
+  postgresql:
+    image: postgres
+    container_name: db
+    environment:
+      POSTGRES_USER: bootcamp
+      POSTGRES_PASSWORD: bootcamp
+      POSTGRES_DB: bootcamp
+    ports:
+      - "5433:5432"
+```
+
+### Comandos úteis:
+- **Subir containers**:
+  ```bash
+  sudo docker compose up -d
+  ```
+- **Verificar containers**:
+  ```bash
+  sudo docker compose ps
+  ```
+- **Acessar PostgreSQL no container**:
+  ```bash
+  sudo docker exec -it db psql -U bootcamp -d bootcamp
+  ```
+- **Acessar PostgreSQL fora do container**:
+  ```bash
+  psql -h localhost -p 5433 -U bootcamp -d bootcamp
+  ```
+- **Parar containers**:
+  ```bash
+  sudo docker compose down
+  ```
+
+---
+
+## Dockerfile do Projeto Backend
+
+### Estrutura:
+1. **Base**: Define a imagem base como Node.js.
+2. **Diretório de trabalho**: Define `/app` como diretório de trabalho.
+3. **Instalação de dependências**:
+   ```dockerfile
+   COPY package*.json ./
+   RUN npm install
+   ```
+4. **Cópia do código**:
+   ```dockerfile
+   COPY . .
+   ```
+5. **Prisma e build**:
+   ```dockerfile
+   RUN npx prisma generate
+   RUN npm run build
+   ```
+   EXPOSE 3000
+   CMD ["npm", "start"]
+   ```
+
+### Exemplo de `Dockerfile`:
+```dockerfile
+FROM node:20.18.0
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npx prisma generate
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "start"]
+```
+
+### Comandos:
+- **Construir imagem**:
+  ```bash
+  sudo docker build -t api .
+  ```
+- **Rodar container**:
+  ```bash
+  docker run -p 3000:3000 api
+  ```
+
+
+Agora você pode rodar um container baseado nessa imagem. Siga os passos abaixo:
+
+Próximos passos:
+Rodar o container: Execute o seguinte comando para rodar o container e mapear a porta 3000 do container para a porta 3000 do host:
+
+Verificar se o container está rodando: Use o comando abaixo para listar os containers em execução:
+
+Acessar a aplicação: Abra o navegador ou use uma ferramenta como curl para acessar a aplicação na URL:
+
+Verificar logs do container (opcional): Caso precise verificar os logs do container, use:
+
+Se precisar de mais ajuda, é só perguntar!
+
+## 📂 Arquivo `.dockerignore`
+
+O arquivo `.dockerignore` é usado para excluir arquivos e diretórios desnecessários ao construir a imagem Docker, reduzindo o tamanho da imagem e melhorando a performance.
+
+### Exemplo de `.dockerignore`:
+```
+node_modules
+npm-debug.log
+.env
+```
+
+### Benefícios:
+- Evita incluir arquivos sensíveis ou desnecessários na imagem.
+- Melhora o desempenho do build.
+
+---
+
+## ❓ Perguntas Frequentes (FAQ)
+
+### 1. **O que é uma imagem Docker?**
+Uma imagem Docker é um modelo imutável que contém tudo o que é necessário para rodar uma aplicação, incluindo o código, bibliotecas, dependências e configurações.
+
+### 2. **Qual a diferença entre uma imagem e um container?**
+- **Imagem**: É um modelo estático, como um blueprint.
+- **Container**: É uma instância em execução de uma imagem, como uma casa construída a partir de uma planta.
+
+### 3. **Como listar todos os containers em execução?**
+Use o comando:
+```bash
+docker ps
+```
+Para listar todos os containers (incluindo os parados):
+```bash
+docker ps -a
+```
+
+### 4. **Como parar e remover um container?**
+- Para parar um container:
+  ```bash
+  docker stop <container_id>
+  ```
+- Para remover um container:
+  ```bash
+  docker rm <container_id>
+  ```
+
+### 5. **Como remover imagens não utilizadas?**
+Use o comando:
+```bash
+docker image prune
+```
+Para remover todas as imagens não utilizadas:
+```bash
+docker image prune -a
+```
+
+### 6. **Como verificar o espaço usado pelo Docker?**
+Use o comando:
+```bash
+docker system df
+```
+
+### 7. **Como limpar recursos não utilizados pelo Docker?**
+Para limpar containers, imagens, volumes e redes não utilizados:
+```bash
+docker system prune
+```
+
+### 8. **Como acessar logs de um container?**
+Use o comando:
+```bash
+docker logs <container_id>
+```
+
+### 9. **Como executar um comando dentro de um container em execução?**
+Use o comando:
+```bash
+docker exec -it <container_id> <comando>
+```
+Por exemplo, para abrir um terminal bash dentro do container:
+```bash
+docker exec -it <container_id> bash
+```
+
+### 10. **Como criar um volume para persistir dados?**
+Crie um volume com:
+```bash
+docker volume create <nome_do_volume>
+```
+E use-o no `docker run`:
+```bash
+docker run -v <nome_do_volume>:/caminho/no/container <imagem>
+```
+
+### 11. **Como compartilhar arquivos entre o host e o container?**
+Use o comando:
+```bash
+docker run -v /caminho/no/host:/caminho/no/container <imagem>
+```
+
+### 12. **Como reiniciar automaticamente um container?**
+Use a flag `--restart` ao rodar o container:
+```bash
+docker run --restart always <imagem>
+```
+
+### 13. **Como inspecionar detalhes de um container ou imagem?**
+- Para containers:
+  ```bash
+  docker inspect <container_id>
+  ```
+- Para imagens:
+  ```bash
+  docker inspect <image_id>
+  ```
+
+### 14. **Como verificar a versão do Docker?**
+Use o comando:
 ```bash
 docker --version
 ```
-Isso deve retornar a versão do Docker, indicando que está instalado corretamente. Caso contrário, você precisará instalar o Docker.
 
-#### Para verificar o Docker Compose:
+### 15. **Como criar uma rede personalizada no Docker?**
+Crie uma rede com:
 ```bash
-docker compose --version
+docker network create <nome_da_rede>
 ```
-Se o Docker Compose estiver instalado corretamente, você verá a versão dele. Caso contrário, você precisará instalá-lo.
-
-### 1.2 Configure o arquivo docker-compose.yml
-
-```yml
-services:
-  postgresql:  # Nome do serviço para o container PostgreSQL (pode ser qualquer nome)
-    image: postgres  # Imagem Docker para o PostgreSQL
-    container_name: db  # Nome do container (pode ser qualquer nome) em que o PostgreSQL será executado
-    environment:
-      POSTGRES_USER: bootcamp  # Nome de usuário do banco de dados
-      POSTGRES_PASSWORD: bootcamp  # Senha do banco de dados
-      POSTGRES_DB: bootcamp  # Nome do banco de dados a ser criado
-    ports:
-      - "5433:5432"  # Mapeamento de portas entre o host (esquerda) e o container (direita) - Porta padrão do PostgreSQL para conexões de banco de dados
-
-# Nota: O serviço postgresql define um container. Se você quiser adicionar mais serviços, 
-# como outro banco de dados ou containers de aplicação, você precisa criar serviços adicionais 
-# dentro deste arquivo, seguindo a mesma estrutura. Cada serviço será seu próprio container.
-```
-
-### 2. **Subir o container com o `docker compose.yml`**
-
-Depois de verificar que tudo está instalado, você pode iniciar o container do PostgreSQL com o Docker Compose.
-
-#### **Comando para rodar o Docker Compose**:
-Em **um único terminal**, vá até o diretório onde está o arquivo `docker compose.yml` e digite:
+E conecte containers a ela:
 ```bash
-sudo docker compose up -d
+docker run --network <nome_da_rede> <imagem>
 ```
-- **`up -d`**: Isso inicializa o container em modo "desapegado", ou seja, ele fica rodando em segundo plano (background), sem ocupar o terminal.
 
-Isso vai iniciar o PostgreSQL e qualquer outro serviço que você tenha configurado no `docker compose.yml`.
+### 16. **O que é o Docker Compose?**
+O Docker Compose é uma ferramenta para definir e gerenciar múltiplos containers usando um arquivo `docker-compose.yml`. Ele facilita a orquestração de serviços.
 
-### 3. **Verificar se o container está rodando**
-
-Agora, você pode verificar se o PostgreSQL (e outros containers) está rodando corretamente.
-
-#### **Comando para ver os containers em execução**:
-Em **um único terminal**, digite:
+### 17. **Como subir serviços com o Docker Compose?**
+Use o comando:
 ```bash
-sudo docker compose ps
+docker compose up -d
 ```
-Isso vai listar todos os containers que o Docker Compose está gerenciando. Se tudo estiver certo, você verá o serviço `postgresql` na lista, como por exemplo:
 
+### 18. **Como parar serviços do Docker Compose?**
+Use o comando:
 ```bash
-   Name                 Command               State           Ports         
-------------------------------------------------------------------------
-db                     docker-entrypoint.sh   Up      0.0.0.0:5433->5432/tcp
+docker compose down
 ```
 
-### 4. **Conectar ao banco de dados dentro do container**
-
-Para acessar o PostgreSQL dentro do container, você usará o comando `docker exec`.
-
-#### **Comando para acessar o PostgreSQL dentro do container**:
-Abra **um novo terminal** (se preferir) e digite:
-
+### 19. **Como atualizar uma imagem Docker?**
+Baixe a versão mais recente da imagem:
 ```bash
-sudo docker exec -it db psql -U bootcamp -d bootcamp
+docker pull <imagem>
 ```
-Aqui está o que cada parte faz:
-- **`exec -it`**: Isso permite abrir um terminal interativo dentro do container.
-- **`db`**: Esse é o nome do container do PostgreSQL (que você definiu em `docker compose.yml`).
-- **`psql -U bootcamp -d bootcamp`**: Este comando abre o PostgreSQL e se conecta ao banco de dados chamado `bootcamp` com o usuário `bootcamp`.
+E recrie o container com a nova imagem.
 
-### 5. **Acessar o banco de dados de fora do container (se não estiver usando o terminal do container)**
-
-Caso você queira acessar o banco de dados de fora do container, você pode usar o cliente `psql` ou outro software de banco de dados. O Docker mapeou a porta 5433 do seu computador para a porta 5432 do container.
-
-#### **Comando para acessar o PostgreSQL de fora do container**:
-
-Em **um terminal normal**, fora do container, digite:
-
+### 20. **Como verificar as portas expostas por um container?**
+Use o comando:
 ```bash
-psql -h localhost -p 5433 -U bootcamp -d bootcamp
+docker port <container_id>
 ```
 
-Aqui está o que cada parte faz:
-- **`localhost`**: A conexão será feita ao seu próprio computador (onde o Docker está rodando).
-- **`-p 5433`**: Você mapeou a porta 5433 no seu computador para a porta 5432 dentro do container (a porta padrão do PostgreSQL).
-- **`-U bootcamp`**: O usuário do banco de dados é `bootcamp`, conforme definido no `docker compose.yml`.
-- **`-d bootcamp`**: O nome do banco de dados é `bootcamp`, conforme definido no `docker compose.yml`.
+---
 
-### 6. **Verificar os logs do container (opcional)**
+## Como rodar uma aplicação com Docker Compose
 
-Se você estiver tendo problemas ou quiser ver mais informações sobre o que está acontecendo dentro do seu container PostgreSQL, pode verificar os logs.
+### Passos para rodar a aplicação:
 
-#### **Comando para ver os logs do container**:
-Em **um único terminal**, digite:
+1. **Construir e subir os containers**:
+   Use o comando abaixo para construir as imagens e subir os containers definidos no arquivo `docker-compose.yml`:
+   ```bash
+   sudo docker compose up -d --build
+   ```
 
-```bash
-sudo docker compose logs postgresql
-```
+2. **Verificar se os containers estão rodando**:
+   Após subir os containers, use o comando abaixo para listar os containers em execução:
+   ```bash
+   sudo docker compose ps
+   ```
 
-Esse comando vai mostrar os logs gerados pelo serviço PostgreSQL, o que pode ajudar a depurar possíveis erros.
+3. **Verificar os logs da aplicação**:
+   Para garantir que a aplicação está funcionando corretamente, veja os logs do container da aplicação:
+   ```bash
+   sudo docker compose logs -f app
+   ```
 
-### 7. **Parar o Docker Compose**
+4. **Acessar a aplicação**:
+   Abra o navegador ou use `curl` para acessar a aplicação na URL:
+   ```
+   http://localhost:3000
+   ```
 
-Caso você queira parar o container, você pode usar o comando abaixo:
+### Como saber se funcionou?
 
-#### **Comando para parar o Docker Compose**:
-Em **um único terminal**, digite:
+- **Containers rodando**: O comando `sudo docker compose ps` deve mostrar os containers `app` e `postgres` com o status `running`.
+- **Logs da aplicação**: Os logs do container da aplicação (`sudo docker compose logs -f app`) devem indicar que o servidor está ouvindo na porta 3000, como:
+  ```
+  Server listening on port 3000
+  ```
+- **Teste da API**: Use ferramentas como Postman ou `curl` para testar os endpoints da API e verificar se estão respondendo corretamente.
 
+### Parar os serviços (opcional):
+Caso precise parar os serviços, use o comando:
 ```bash
 sudo docker compose down
 ```
 
-Esse comando vai parar e remover todos os containers que o Docker Compose criou.
+### Limpar recursos (opcional):
+Para limpar imagens, volumes e redes não utilizados, use:
+```bash
+sudo docker system prune
+```
 
-### Resumo:
-
-- **`docker compose up -d`**: Inicializa o container em segundo plano.
-- **`docker compose ps`**: Verifica se o container está rodando.
-- **`docker exec -it db psql -U bootcamp -d bootcamp`**: Acessa o banco de dados dentro do container.
-- **`psql -h localhost -p 5433 -U bootcamp -d bootcamp`**: Acessa o banco de dados de fora do container (pelo computador).
-- **`docker compose logs postgresql`**: Verifica os logs do container.
-- **`docker compose down`**: Para os containers.
-
-Você só precisa abrir **um segundo terminal** se quiser executar algum comando dentro do container enquanto ele estiver rodando em segundo plano. Se você for acessar o banco de dados de fora do container ou verificar os logs, não precisa de outro terminal.
+---
 
 

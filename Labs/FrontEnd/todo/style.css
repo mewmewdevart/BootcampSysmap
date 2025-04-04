@@ -1,0 +1,260 @@
+@import url("https://fonts.googleapis.com/css2?family=Boldonse&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+:root {
+  --font-family: "Roboto", sans-serif;
+  --font-size-h1: 1.5rem;
+  --font-color: white;
+  --background-color: #101828;
+  --container-bg-color: #1e2939;
+  --primary-color: #615fff;
+  --secondary-color: #ff5b99;
+  --border-radius: 0.5rem;
+  --padding: 1rem;
+  --task-button-bg-color: #fff;
+  --task-text-color: oklch(70.4% 0.04 256.788);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: grid;
+  justify-content: center;
+  font-family: var(--font-family);
+  font-optical-sizing: auto;
+  background-color: var(--background-color);
+  color: var(--font-color);
+}
+
+.logo {
+  width: 3rem;
+  background-color: var(--primary-color);
+}
+
+.container {
+  width: 32rem;
+  background-color: var(--container-bg-color);
+  padding: var(--padding);
+  color: var(--task-text-color);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-block: 1.5rem;
+  background-color: var(--container-bg-color);
+  padding: var(--padding);
+}
+
+h1 {
+  font-family: "Boldonse", system-ui;
+  font-size: var(--font-size-h1);
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+.create-task-form {
+  display: flex;
+  align-items: end;
+}
+
+.create-task-input {
+  flex: 1;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.create-task-input input {
+  height: 2rem;
+  padding-inline: 0.5rem;
+}
+
+.create-task-form button {
+  height: 2rem;
+}
+
+.taskList ul {
+  display: grid;
+  list-style: none;
+}
+
+.taskList ul li {
+  display: flex;
+  padding-block: 0.1rem;
+  justify-content: space-between;
+  border-bottom: #2a374b solid 1px;
+}
+
+.taskList ul li button {
+  width: 95px;
+  padding: 0.25rem;
+  background-color: var(--primary-color);
+}
+
+.taskList ul li .task {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 80%;
+}
+
+/* From Uiverse.io by KINGFRESS */
+.btnFinish,
+.btnAdd {
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  width: 95.02px;
+  height: 2rem;
+  border: none;
+  background-color: var(--primary-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btnAdd:hover {
+  background-color: #da4b82;
+}
+
+
+.btnFinish:hover {
+  background-color: #514fdb;
+}
+
+.btnAdd {
+  background-color: var(--secondary-color);
+}
+
+button .span-mother {
+  display: flex;
+  overflow: hidden;
+}
+
+button:hover .span-mother {
+  position: absolute;
+}
+
+button:hover .span-mother span {
+  transform: translateY(1.2em);
+}
+
+button .span-mother span:nth-child(1) {
+  transition: 0.2s;
+}
+
+button .span-mother span:nth-child(2) {
+  transition: 0.3s;
+}
+
+button .span-mother span:nth-child(3) {
+  transition: 0.4s;
+}
+
+button .span-mother span:nth-child(4) {
+  transition: 0.5s;
+}
+
+button .span-mother span:nth-child(5) {
+  transition: 0.6s;
+}
+
+button .span-mother span:nth-child(6) {
+  transition: 0.7s;
+}
+
+button .span-mother2 {
+  display: flex;
+  position: absolute;
+  overflow: hidden;
+}
+
+button .span-mother2 span {
+  transform: translateY(-1.2em);
+}
+
+button:hover .span-mother2 span {
+  transform: translateY(0);
+}
+
+button .span-mother2 span {
+  transition: 0.2s;
+}
+
+button .span-mother2 span:nth-child(2) {
+  transition: 0.3s;
+}
+
+button .span-mother2 span:nth-child(3) {
+  transition: 0.4s;
+}
+
+button .span-mother2 span:nth-child(4) {
+  transition: 0.5s;
+}
+
+button .span-mother2 span:nth-child(5) {
+  transition: 0.6s;
+}
+
+button .span-mother2 span:nth-child(6) {
+  transition: 0.7s;
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: var(--padding);
+  }
+
+  h1 {
+    font-size: 1.25rem;
+  }
+
+  .create-task-form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .create-task-form button {
+    width: 100%;
+  }
+
+  .taskList ul li {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .taskList ul li button {
+    width: 100%;
+  }
+
+  .taskList ul li .task {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    width: 2.5rem;
+  }
+
+  h1 {
+    font-size: 1rem;
+  }
+
+  .create-task-input input {
+    font-size: 0.875rem;
+  }
+
+  .btnFinish,
+  .btnAdd {
+    font-size: 0.875rem;
+  }
+}
