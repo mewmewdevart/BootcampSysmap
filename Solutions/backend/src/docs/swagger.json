@@ -1,0 +1,1185 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sysmap Backend Challenge API",
+    "version": "1.0.0",
+    "description": "API para cadastro de usuários, gerenciamento de atividades, XP, níveis e conquistas."
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Autenticação"],
+        "summary": "Cadastro de Usuário",
+        "description": "Endpoint para cadastrar um novo usuário. Campos obrigatórios: name, email, cpf, password e confirmPassword.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {"type": "string", "example": "João Silva"},
+                  "email": {"type": "string", "format": "email", "example": "joao@email.com"},
+                  "cpf": {"type": "string", "example": "12345678901"},
+                  "password": {"type": "string", "example": "SenhaSegura123!"},
+                  "confirmPassword": {"type": "string", "example": "SenhaSegura123!"}
+                },
+                "required": ["name", "email", "cpf", "password", "confirmPassword"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string", "example": "Usuário criado com sucesso"},
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "string", "format": "uuid"},
+                        "name": {"type": "string"},
+                        "email": {"type": "string"},
+                        "cpf": {"type": "string"},
+                        "avatar": {"type": "string", "example": "/resources/user-default.jpg"},
+                        "xp": {"type": "integer", "example": 0},
+                        "level": {"type": "integer", "example": 1}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erros de Validação (E1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "enum": [
+                        "E1: Informe os campos obrigatórios corretamente.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo nome está vazio.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo nome não pode ser composto apenas por números.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo nome não pode conter números.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo e-mail está inválido.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo CPF está vazio.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo CPF deve conter 11 dígitos numéricos.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo senha está vazio.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo senha deve ter no mínimo 6 caracteres.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo senha deve conter pelo menos uma letra maiúscula.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo senha deve conter pelo menos uma letra minúscula.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo senha deve conter pelo menos um número.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo senha deve conter pelo menos um caractere especial.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo senha não pode ser composta apenas por números.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo confirmação de senha está vazio.",
+                        "E1: Informe os campos obrigatórios corretamente. As senhas não coincidem.",
+                        "E1: Informe os campos obrigatórios corretamente. Campos inválidos ou não permitidos."
+                      ],
+                      "example": "E1: Informe os campos obrigatórios corretamente. O campo nome está vazio."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de Dados (E3)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {"type": "string", "example": "E3: O e-mail ou CPF informado já pertence a outro usuário."}
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro Interno (E23)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {"type": "string", "example": "E23: Erro inesperado."}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/sign-in": {
+      "post": {
+        "tags": ["Autenticação"],
+        "summary": "Login do Usuário",
+        "description": "Endpoint para autenticação com e-mail e senha.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {"type": "string", "format": "email", "example": "joao@email.com"},
+                  "password": {"type": "string", "example": "SenhaSegura123!"}
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {"type": "string", "example": "jwt.token.here"},
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "string", "format": "uuid"},
+                        "name": {"type": "string"},
+                        "email": {"type": "string"},
+                        "avatar": {"type": "string"},
+                        "xp": {"type": "integer"},
+                        "level": {"type": "integer"},
+                        "achievements": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {"type": "string", "example": "Primeiro Login"},
+                              "criterion": {"type": "string", "example": "first_login"}
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erros de Validação (E1)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "enum": [
+                        "E1: Informe os campos obrigatórios corretamente. O campo e-mail é obrigatório.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo senha é obrigatório.",
+                        "E1: Informe os campos obrigatórios corretamente. O campo e-mail está inválido."
+                      ],
+                      "example": "E1: Informe os campos obrigatórios corretamente. O campo e-mail está inválido."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais Inválidas (E5)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {"type": "string", "example": "E5: Senha incorreta."}
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Conta Desativada (E6)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {"type": "string", "example": "E6: Esta conta foi desativada e não pode ser utilizada."}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": ["Usuários"],
+        "summary": "Listar usuários paginados",
+        "description": "Retorna uma lista paginada de usuários ativos (não desativados).",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Número da página (padrão: 1)",
+            "schema": {"type": "integer", "default": 1}
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Tamanho da página (padrão: 10)",
+            "schema": {"type": "integer", "default": 10}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de usuários",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {"type": "string", "format": "uuid"},
+                          "name": {"type": "string"},
+                          "email": {"type": "string"},
+                          "cpf": {"type": "string"},
+                          "avatar": {"type": "string"},
+                          "xp": {"type": "integer"},
+                          "level": {"type": "integer"}
+                        }
+                      }
+                    },
+                    "total": {"type": "integer"},
+                    "page": {"type": "integer"},
+                    "pageSize": {"type": "integer"}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {"type": "string", "example": "E1: Parâmetros de paginação inválidos"}
+                  }
+                }
+              }
+            }
+          },
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "403": {"$ref": "#/components/responses/Forbidden"},
+          "500": {"$ref": "#/components/responses/InternalError"}
+        },
+        "security": [{"BearerAuth": []}]
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "tags": ["Usuários"],
+        "summary": "Buscar usuário por ID",
+        "description": "Retorna detalhes de um usuário específico incluindo conquistas.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "format": "uuid"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados do usuário",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {"type": "string", "format": "uuid"},
+                    "name": {"type": "string"},
+                    "email": {"type": "string"},
+                    "cpf": {"type": "string"},
+                    "avatar": {"type": "string"},
+                    "xp": {"type": "integer"},
+                    "level": {"type": "integer"},
+                    "UserAchievements": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {"type": "string"},
+                          "criterion": {"type": "string"}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "UUID inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {"type": "string", "example": "E27: UUID inválido"}
+                  }
+                }
+              }
+            }
+          },
+          "404": {"$ref": "#/components/responses/UserNotFound"},
+          "403": {"$ref": "#/components/responses/Forbidden"}
+        },
+        "security": [{"BearerAuth": []}]
+      },
+      "put": {
+        "tags": ["Usuários"],
+        "summary": "Atualizar dados do usuário",
+        "description": "Atualiza informações do usuário (nome, email, senha ou avatar).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "format": "uuid"}
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {"type": "string", "example": "Novo Nome"},
+                  "email": {"type": "string", "format": "email", "example": "novo@email.com"},
+                  "password": {"type": "string", "example": "NovaSenha123!"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário atualizado",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/User"}
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "enum": [
+                        "E1: Senha deve ter 6+ caracteres",
+                        "E7: CPF não pode ser alterado",
+                        "E1: Formato de e-mail inválido"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de e-mail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {"type": "string", "example": "E3: E-mail já cadastrado"}
+                  }
+                }
+              }
+            }
+          },
+          "404": {"$ref": "#/components/responses/UserNotFound"}
+        },
+        "security": [{"BearerAuth": []}]
+      },
+      "delete": {
+        "tags": ["Usuários"],
+        "summary": "Desativar conta",
+        "description": "Realiza soft delete da conta do usuário.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "format": "uuid"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Conta desativada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string", "example": "Conta desativada com sucesso"}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Conta já desativada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {"type": "string", "example": "E7: Conta já desativada"}
+                  }
+                }
+              }
+            }
+          },
+          "404": {"$ref": "#/components/responses/UserNotFound"}
+        },
+        "security": [{"BearerAuth": []}]
+      }
+    },
+    "/user/{id}/experience": {
+      "post": {
+        "tags": ["Usuários"],
+        "summary": "Adicionar experiência",
+        "description": "Adiciona XP ao usuário e atualiza seu nível.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "format": "uuid"}
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "xp": {"type": "integer", "example": 50}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "XP adicionado",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/User"}
+              }
+            }
+          },
+          "400": {
+            "description": "XP inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {"type": "string", "example": "E1: Valor de XP inválido"}
+                  }
+                }
+              }
+            }
+          },
+          "404": {"$ref": "#/components/responses/UserNotFound"}
+        },
+        "security": [{"BearerAuth": []}]
+      }
+    },
+    "/user/{id}/achievements": {
+      "post": {
+        "tags": ["Usuários"],
+        "summary": "Adicionar conquista",
+        "description": "Vincula uma conquista ao perfil do usuário.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "format": "uuid"}
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "achievementId": {"type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440000"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Conquista adicionada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string", "example": "Conquista desbloqueada!"}
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Conquista não encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {"type": "string", "example": "E20: Conquista não encontrada"}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{"BearerAuth": []}]
+      }
+    },
+    "/user/avatar": {
+      "put": {
+        "tags": ["Usuários"],
+        "summary": "Atualizar avatar",
+        "description": "Faz upload de uma nova foto de perfil (PNG/JPG)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Avatar atualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "avatar": {"type": "string", "example": "/resources/user-default.jpg"}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de formato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {"type": "string", "example": "E2: Formato de imagem inválido"}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{"BearerAuth": []}]
+      }
+    },
+    "/user/preferences": {
+      "get": {
+        "tags": ["Preferências"],
+        "summary": "Listar preferências",
+        "description": "Retorna os tipos de atividades preferidos do usuário",
+        "responses": {
+          "200": {
+            "description": "Lista de preferências",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {"type": "string", "format": "uuid"},
+                      "name": {"type": "string"},
+                      "description": {"type": "string"},
+                      "image": {"type": "string"}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {"$ref": "#/components/responses/UserNotFound"}
+        },
+        "security": [{"BearerAuth": []}]
+      },
+      "post": {
+        "tags": ["Preferências"],
+        "summary": "Definir preferências",
+        "description": "Atualiza os tipos de atividades preferidos do usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "typeIds": {
+                    "type": "array",
+                    "items": {"type": "string", "format": "uuid"},
+                    "example": ["550e8400-e29b-41d4-a716-446655440000"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Preferências atualizadas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string", "example": "Preferências salvas!"}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "IDs inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {"type": "string", "example": "E20: IDs de preferência inválidos"}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{"BearerAuth": []}]
+      }
+    },
+    "/activities/new": {
+      "post": {
+        "tags": ["Atividades"],
+        "summary": "Criar atividade",
+        "description": "Cria uma nova atividade com imagem e localização",
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {"type": "string", "example": "Caminhada Ecológica"},
+                  "description": {"type": "string", "example": "Caminhada na floresta"},
+                  "type": {"type": "string", "format": "uuid", "example": "550e8400-e29b-41d4-a716-446655440000"},
+                  "scheduledDate": {"type": "string", "format": "date-time"},
+                  "latitude": {"type": "number", "example": -23.5505},
+                  "longitude": {"type": "number", "example": -46.6333},
+                  "private": {"type": "boolean", "example": false},
+                  "image": {"type": "string", "format": "binary"}
+                },
+                "required": ["title", "description", "type", "scheduledDate", "latitude", "longitude"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Atividade criada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string", "example": "Atividade registrada com sucesso"},
+                    "activity": {"$ref": "#/components/schemas/Activity"}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erros de validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "enum": [
+                        "E1: Campos obrigatórios inválidos",
+                        "E2: Formato de imagem inválido"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {"$ref": "#/components/responses/Forbidden"}
+        }
+      }
+    },
+    "/activities/{id}/subscribe": {
+      "post": {
+        "tags": ["Atividades"],
+        "summary": "Inscrever-se em atividade",
+        "description": "Inscreve o usuário em uma atividade pública ou solicita acesso em privada",
+        "security": [{"BearerAuth": []}],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {"type": "string", "format": "uuid"}
+        }],
+        "responses": {
+          "200": {
+            "description": "Inscrição realizada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {"type": "string", "format": "uuid"},
+                    "activityId": {"type": "string", "format": "uuid"},
+                    "userId": {"type": "string", "format": "uuid"},
+                    "approved": {"type": "boolean"}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erros de inscrição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "enum": [
+                        "E7: Você já está inscrito",
+                        "E12: Atividade concluída"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Restrições de acesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "enum": [
+                        "E8: Criador não pode se inscrever",
+                        "E9: Aprovação necessária"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/{id}/unsubscribe": {
+      "delete": {
+        "tags": ["Atividades"],
+        "summary": "Cancelar inscrição",
+        "description": "Cancela a inscrição em uma atividade",
+        "security": [{"BearerAuth": []}],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {"type": "string", "format": "uuid"}
+        }],
+        "responses": {
+          "200": {
+            "description": "Inscrição cancelada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string", "example": "Inscrição cancelada com sucesso"}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erros de cancelamento",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "enum": [
+                        "E18: Presença já confirmada",
+                        "E12: Atividade concluída"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/{id}/conclude": {
+      "put": {
+        "tags": ["Atividades"],
+        "summary": "Concluir atividade",
+        "description": "Encerra uma atividade e calcula XP para o criador",
+        "security": [{"BearerAuth": []}],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {"type": "string", "format": "uuid"}
+        }],
+        "responses": {
+          "200": {
+            "description": "Atividade concluída",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string", "example": "Atividade concluída com sucesso"},
+                    "xpGained": {"type": "number", "example": 150}
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Acesso negado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {"type": "string", "example": "E17: Apenas o criador pode concluir"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/{id}/check-in": {
+      "put": {
+        "tags": ["Atividades"],
+        "summary": "Confirmar presença",
+        "description": "Realiza check-in usando código de confirmação",
+        "security": [{"BearerAuth": []}],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {"type": "string", "format": "uuid"}
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "confirmationCode": {"type": "string", "example": "ABC123"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Check-in realizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string", "example": "Presença confirmada com sucesso"}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erros de validação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "enum": [
+                        "E10: Código inválido",
+                        "E11: Check-in já realizado"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities": {
+      "get": {
+        "tags": ["Atividades"],
+        "summary": "Listar atividades",
+        "description": "Retorna atividades paginadas filtradas por tipo",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {"type": "integer", "default": 1}
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {"type": "integer", "default": 10}
+          },
+          {
+            "name": "typeId",
+            "in": "query",
+            "schema": {"type": "string", "format": "uuid"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de atividades",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "activities": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/Activity"}
+                    },
+                    "total": {"type": "integer"},
+                    "page": {"type": "integer"},
+                    "pageSize": {"type": "integer"},
+                    "totalPages": {"type": "integer"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activities/types": {
+      "get": {
+        "tags": ["Atividades"],
+        "summary": "Listar tipos de atividades",
+        "description": "Retorna todos os tipos de atividades disponíveis",
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Tipos de atividades",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {"type": "string", "format": "uuid"},
+                      "name": {"type": "string"}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string", "format": "uuid"},
+          "name": {"type": "string"},
+          "email": {"type": "string"},
+          "cpf": {"type": "string"},
+          "avatar": {"type": "string"},
+          "xp": {"type": "integer"},
+          "level": {"type": "integer"}
+        }
+      },
+      "Activity": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string", "format": "uuid"},
+          "title": {"type": "string"},
+          "description": {"type": "string"},
+          "type": {"type": "string", "format": "uuid"},
+          "scheduledDate": {"type": "string", "format": "date-time"},
+          "image": {"type": "string"},
+          "private": {"type": "boolean"},
+          "creator": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string", "format": "uuid"},
+              "name": {"type": "string"},
+              "avatar": {"type": "string"}
+            }
+          },
+          "address": {
+            "type": "object",
+            "properties": {
+              "latitude": {"type": "number"},
+              "longitude": {"type": "number"}
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "UserNotFound": {
+        "description": "User not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {"type": "string", "example": "E4: User not found"}
+              }
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Not authenticated",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {"type": "string", "example": "E21: Authentication required"}
+              }
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Acesso negado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {"type": "string", "example": "E19: Autenticação necessária"}
+              }
+            }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "Internal error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {"type": "string", "example": "E23: Unexpected error"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [{"BearerAuth": []}]
+}

@@ -1,0 +1,44 @@
+services:
+  app:
+    container_name: bootcamp-2025-1-app
+    image: igorsouzzza/bootcamp-2025-1
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://bootcamp:bootcamp@postgres:5432/bootcamp
+      S3_ENDPOINT: http://localstack:4566
+    depends_on:
+      - db
+      - localstack
+    restart: always
+    networks:
+      - bootcamp-network
+
+  db:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: bootcamp
+      POSTGRES_PASSWORD: bootcamp
+      POSTGRES_DB: bootcamp
+    ports:
+      - "5432:5432"
+    networks:
+      - bootcamp-network
+
+  localstack:
+    container_name: localstack
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+    networks:
+      - bootcamp-network
+
+networks:
+  bootcamp-network:
+    driver: bridge

@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  postgresql-challenge-tech:
+    image: postgres:latest
+    container_name: backend-sysmapchallenge
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: sysmapchallenge
+      POSTGRES_PASSWORD: sysmapchallenge
+      POSTGRES_DB: sysmapchallenge
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sysmapchallenge -d sysmapchallenge"]
+      interval: 300s  # Check a cada 5 minutos
+      timeout: 5s
+      retries: 5
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "4566:4566"
+    environment:
+      SERVICES: s3
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY: test
+      AWS_SECRET_ACCESS_KEY: test
+    volumes:
+      - "./localstack:/tmp/localstack"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend-api
+    env_file:
+      - .env
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgresql-challenge-tech
+      - localstack
+    restart: always
+
+volumes:
+  postgres_data:
